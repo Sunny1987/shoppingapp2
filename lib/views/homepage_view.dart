@@ -24,9 +24,8 @@ class _HomePageState extends State<HomePage> {
           elevation: 0.0,
           backgroundColor: Colors.grey.shade300,
           iconTheme: new IconThemeData(color: Colors.black38),
-          // actions: <Widget>[
-          //   IconButton(icon: Icon(Icons.search), onPressed: (){})
-          // ],
+          flexibleSpace: IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
+         
         ),
         endDrawer: Drawer(),
         body: Container(
