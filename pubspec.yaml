@@ -49,6 +49,14 @@ flutter:
     - assets/images/saree.jpg
     - assets/images/saree1.jpg
     - assets/images/saree2.jpg
+    - assets/images/dashboard.jpg
+    - assets/images/tops.jpg
+    - assets/images/trouser.jpg
+    - assets/images/specialoffer.jpg
+    - assets/images/saree3.jpg
+    - assets/images/saree4.jpeg
+    - assets/images/saree5.jpg
+    - assets/images/blouse.jpg
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

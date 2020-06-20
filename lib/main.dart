@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shoppingapp2/views/Product_view.dart';
 import 'package:shoppingapp2/views/authentication_view.dart';
+import 'package:shoppingapp2/views/homepage_view.dart';
 //import 'package:shoppingapp2/views/homepage_view.dart';
 
 void main() {
@@ -20,6 +22,8 @@ class _MyAppState extends State<MyApp> {
       initialRoute: AuthenticationView.id,
       routes: {
         AuthenticationView.id : (context) => AuthenticationView(),
+        HomePage.id : (context) => HomePage(),
+        ProductDisplayPage.id : (context) => ProductDisplayPage()
       },
 
     );
