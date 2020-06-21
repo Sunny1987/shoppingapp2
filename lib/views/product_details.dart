@@ -45,8 +45,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
           elevation: 0.0,
           backgroundColor: Colors.grey.shade300,
           iconTheme: new IconThemeData(color: Colors.black38),
-          flexibleSpace:
+          flexibleSpace: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              SizedBox(width: 40.0),
               IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
+            ],
+          ),
+
+              //IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
         ),
         endDrawer: Drawer(),
         body: Container(

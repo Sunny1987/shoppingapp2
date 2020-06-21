@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/widgets/product_card.dart';
 
 class ProductDisplayPage extends StatefulWidget {
@@ -46,8 +47,16 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
           elevation: 0.0,
           backgroundColor: Colors.grey.shade300,
           iconTheme: new IconThemeData(color: Colors.black38),
-          flexibleSpace: IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
-         
+          flexibleSpace: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              SizedBox(width: 40.0),
+              IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {
+                Navigator.pushNamed(context, ShoppingCart.id);
+              }),
+            ],
+          ),
         ),
         endDrawer: Drawer(),
         body: Container(

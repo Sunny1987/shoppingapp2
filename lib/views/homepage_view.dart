@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/views/product_view.dart';
 import 'package:shoppingapp2/widgets/category_card.dart';
 import 'package:shoppingapp2/widgets/special_card.dart';
@@ -24,8 +25,16 @@ class _HomePageState extends State<HomePage> {
           elevation: 0.0,
           backgroundColor: Colors.grey.shade300,
           iconTheme: new IconThemeData(color: Colors.black38),
-          flexibleSpace: IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
-         
+          flexibleSpace: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              SizedBox(width: 40.0),
+              IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {
+                Navigator.pushNamed(context, ShoppingCart.id);
+              }),
+            ],
+          ),
         ),
         endDrawer: Drawer(),
         body: Container(
@@ -80,34 +89,52 @@ class _HomePageState extends State<HomePage> {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
-                            InkWell(onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDisplayPage(
-                                categoryname: 'Saree',
-                                headerimage: saree5,
-                              )));
-                            } ,child: CategoryCard(productname: 'Saree',image: saree5,)),
-
-                            InkWell(onTap:() {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDisplayPage(
-                                categoryname: 'Tops',
-                                headerimage: tops,
-                              )));
-                            } ,child: CategoryCard(productname: 'Tops',image:tops)),
-
-                            InkWell(onTap: () {
-                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDisplayPage(
-                                categoryname: 'Blouse',
-                                headerimage: blouse,
-                              )));
-                            }, child: CategoryCard(productname: 'Blouse',image: blouse,)),
-
-
-                            InkWell(onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDisplayPage(
-                                categoryname: 'Trouser',
-                                headerimage: trousers,
-                              )));
-                            }, child: CategoryCard(productname: 'Trouser',image: trousers,)),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ProductDisplayPage(
+                                            categoryname: 'Saree',
+                                            headerimage: saree5,
+                                          )));
+                                },
+                                child: CategoryCard(
+                                  productname: 'Saree',
+                                  image: saree5,
+                                )),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ProductDisplayPage(
+                                            categoryname: 'Tops',
+                                            headerimage: tops,
+                                          )));
+                                },
+                                child: CategoryCard(
+                                    productname: 'Tops', image: tops)),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ProductDisplayPage(
+                                            categoryname: 'Blouse',
+                                            headerimage: blouse,
+                                          )));
+                                },
+                                child: CategoryCard(
+                                  productname: 'Blouse',
+                                  image: blouse,
+                                )),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ProductDisplayPage(
+                                            categoryname: 'Trouser',
+                                            headerimage: trousers,
+                                          )));
+                                },
+                                child: CategoryCard(
+                                  productname: 'Trouser',
+                                  image: trousers,
+                                )),
                           ],
                         ),
                       ),
@@ -117,13 +144,12 @@ class _HomePageState extends State<HomePage> {
               ),
               //SizedBox(height: 10.0,),
               Expanded(
-                flex: 3,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width,
-                  child: SpecialCard(),
-                )
-                ),
+                  flex: 3,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width,
+                    child: SpecialCard(),
+                  )),
             ],
           ),
         ),
