@@ -3,6 +3,7 @@ import 'package:shoppingapp2/views/Product_view.dart';
 import 'package:shoppingapp2/views/authentication_view.dart';
 import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/views/homepage_view.dart';
+import 'package:shoppingapp2/views/product_pic_closeup.dart';
 //import 'package:shoppingapp2/views/homepage_view.dart';
 
 void main() {
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
         HomePage.id : (context) => HomePage(),
         ProductDisplayPage.id : (context) => ProductDisplayPage(),
         ShoppingCart.id : (context) => ShoppingCart(),
+        ProductCloseUp.id : (context) => ProductCloseUp(),
       },
 
     );
