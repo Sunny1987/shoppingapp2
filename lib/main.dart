@@ -7,6 +7,7 @@ import 'package:shoppingapp2/services/mainservice.dart';
 import 'package:shoppingapp2/views/Product_view.dart';
 import 'package:shoppingapp2/views/authentication_view.dart';
 import 'package:shoppingapp2/views/cart.dart';
+import 'package:shoppingapp2/views/favourites.dart';
 import 'package:shoppingapp2/views/homepage_view.dart';
 import 'package:shoppingapp2/views/product_pic_closeup.dart';
 import 'package:shoppingapp2/widgets/wrapper.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
             ShoppingCart.id: (context) => ShoppingCart(),
             ProductCloseUp.id: (context) => ProductCloseUp(),
             Wrapper.id: (context) => Wrapper(),
+            FavouritesView.id : (context) => FavouritesView(),
           },
         ),
       ),

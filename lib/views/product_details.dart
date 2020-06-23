@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/services/mainservice.dart';
 import 'package:shoppingapp2/views/product_pic_closeup.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
 
@@ -9,8 +12,21 @@ class ProductDetailsPage extends StatefulWidget {
   final String image;
   final String name;
   final String price;
+  final bool isFav;
+  final String description;
+  final String discount;
+  final MainService model;
+  final AppUser user;
 
-  ProductDetailsPage({this.image, this.name, this.price});
+  ProductDetailsPage(
+      {this.image,
+      this.name,
+      this.price,
+      this.isFav,
+      this.description,
+      this.model,
+      this.user,
+      this.discount});
 
   @override
   _ProductDetailsPageState createState() => _ProductDetailsPageState();
@@ -20,6 +36,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> tween;
+  int _quantity = 0;
 
   @override
   void initState() {
@@ -41,6 +58,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
 
   @override
   Widget build(BuildContext context) {
+    AppUser user =Provider.of<AppUser>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -61,7 +79,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
         endDrawer: MyDrawer(),
         body: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductCloseUp()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => ProductCloseUp()));
           },
           child: Container(
             child: Column(
@@ -70,7 +89,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(widget.image), fit: BoxFit.cover),
+                          image: NetworkImage(widget.image), fit: BoxFit.cover),
                     ),
                     child: Column(
                       children: <Widget>[
@@ -86,10 +105,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                 elevation: 8.0,
                                 borderRadius: BorderRadius.circular(30.0),
                                 child: IconButton(
-                                    icon: Icon(
-                                      Icons.favorite_border,
-                                      color: Color(myyellow),
-                                    ),
+                                    icon: widget.isFav
+                                        ? Icon(
+                                            Icons.favorite,
+                                            color: Color(myyellow),
+                                          )
+                                        : Icon(
+                                            Icons.favorite_border,
+                                            color: Color(myyellow),
+                                          ),
                                     onPressed: () {}),
                               ),
                             )
@@ -128,7 +152,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                           // ),
                                           Row(
                                             children: <Widget>[
-                                              Text('widget.name',
+                                              Text('${widget.name}',
                                                   style: TextStyle(
                                                       fontFamily: 'Nexa',
                                                       fontWeight:
@@ -136,11 +160,27 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                               SizedBox(
                                                 width: 30,
                                               ),
-                                              Text('widget.price',
+                                              Text('${widget.price}',
                                                   style: TextStyle(
                                                       fontFamily: 'Nexa',
                                                       fontWeight:
                                                           FontWeight.bold)),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                '${widget.description}',
+                                                style: TextStyle(
+                                                  fontFamily: 'Nexa',
+                                                  fontSize: 8,
+                                                ),
+                                              )
                                             ],
                                           ),
                                           SizedBox(
@@ -275,12 +315,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                           30.0),
                                                   child: IconButton(
                                                       icon: Icon(Icons.add),
-                                                      onPressed: null)),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _quantity++;
+                                                        });
+                                                      })),
                                               SizedBox(
                                                 width: 20.0,
                                               ),
                                               Text(
-                                                '1',
+                                                '$_quantity',
                                                 style: TextStyle(
                                                     fontFamily: 'Nexa',
                                                     fontSize: 18.0),
@@ -295,14 +339,28 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                           30.0),
                                                   child: IconButton(
                                                       icon: Icon(Icons.remove),
-                                                      onPressed: null))
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _quantity--;
+                                                        });
+                                                      }))
                                             ],
                                           ),
                                           SizedBox(
                                             height: 20.0,
                                           ),
                                           InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              widget.model.uploadUserCart(
+                                                  user.uid,
+                                                  widget.name,
+                                                  widget.description,
+                                                  widget.price,
+                                                  widget.discount,
+                                                  _quantity == 0 ? '1' : '$_quantity',
+                                                  //docId,
+                                                  widget.image);
+                                            },
                                             child: Container(
                                               width: MediaQuery.of(context)
                                                       .size

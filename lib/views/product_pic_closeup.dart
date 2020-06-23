@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ProductCloseUp extends StatefulWidget {
+  final String image;
+  final String name;
+  final String price;
+  final bool isFav;
+  final String description;
+  final String discount;
+
+  ProductCloseUp({this.image, this.name, this.price, this.isFav,this.description,this.discount});
 
   static String id ='productcloseup';
 

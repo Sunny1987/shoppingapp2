@@ -9,6 +9,7 @@ import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
 import 'package:shoppingapp2/services/mainservice.dart';
 import 'package:shoppingapp2/views/authentication_view.dart';
+import 'package:shoppingapp2/views/favourites.dart';
 import 'package:shoppingapp2/views/product_view.dart';
 //import 'package:shoppingapp2/widgets/signoutbox.dart';
 
@@ -168,8 +169,8 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
         ),
         InkWell(
           onTap: () {
-            // Navigator.of(context)
-            //     .push(MaterialPageRoute(builder: (context) => Favourite()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => FavouritesView()));
           },
           child: ListTile(
             leading: Icon(Icons.favorite, color: Colors.blueAccent),

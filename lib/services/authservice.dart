@@ -86,6 +86,25 @@ class AuthService extends Model {
     }
   }
 
+    void uploadUserCart(String uid, String name, String description, String price,
+      String discount, String quantity, String image) async {
+    try {
+      await Firestore.instance.collection('user_cart').document().setData({
+        'id': uid,
+        'name': name,
+        'description': description,
+        'price': price,
+        'discount': discount,
+        'quantity': quantity,
+        //'docId': docId,
+        'image': image,
+        'createdAt': FieldValue.serverTimestamp()
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   getUsersData(AppUser user) {
     Firestore.instance
         .collection('users')
@@ -98,4 +117,45 @@ class AuthService extends Model {
       });
     });
   }
+
+  void firestoreAction(bool isFav, String docId, String uid, String name,
+      String description, String price, String discount, String image) async {
+    if (isFav) {
+      await uploadUserFavourites(
+          uid, name, description, price, discount, image);
+    } else {
+      await deleteUserFavourites(docId);
+    }
+  }
+
+  void uploadUserFavourites(String uid, String name, String description,
+      String price, String discount, String image) async {
+    try {
+      await Firestore.instance
+          .collection('user_favourites')
+          .document()
+          .setData({
+        'id': uid,
+        'name': name,
+        'description': description,
+        'price': price,
+        'discount': discount,
+        'image': image,
+        'createdAt': FieldValue.serverTimestamp()
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void deleteUserFavourites(String docId) async {
+    await Firestore.instance
+        .collection('user_favourites')
+        .document(docId)
+        .delete();
+  }
+
+
+
+
 }
