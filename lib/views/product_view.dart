@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/views/cart.dart';
+import 'package:shoppingapp2/widgets/mydrawer.dart';
 import 'package:shoppingapp2/widgets/product_card.dart';
 
 class ProductDisplayPage extends StatefulWidget {
@@ -58,7 +59,7 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
             ],
           ),
         ),
-        endDrawer: Drawer(),
+        endDrawer: MyDrawer(),
         body: Container(
           //padding: EdgeInsets.symmetric(horizontal: 20.0),
           height: MediaQuery.of(context).size.height,

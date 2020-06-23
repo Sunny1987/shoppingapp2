@@ -18,3 +18,8 @@ const String appname = 'Mom\'s Collection';
 const int mywhite = 0xFFe5e5e5;
 const int mywhite1 = 0xFFD8E2D8;
 const int myyellow = 0xFFEFA51B;
+
+//enum vals
+const String No_Such_User = 'No such User';
+const String Invalid_Email_Format = 'Please provide valid email address';
+const String Invalid_Email_Or_Password = 'Invalid email id or password';

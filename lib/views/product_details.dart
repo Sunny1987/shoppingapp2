@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/views/product_pic_closeup.dart';
+import 'package:shoppingapp2/widgets/mydrawer.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   static String id = 'productdetails';
@@ -57,7 +58,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
 
           //IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
         ),
-        endDrawer: Drawer(),
+        endDrawer: MyDrawer(),
         body: GestureDetector(
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductCloseUp()));

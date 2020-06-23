@@ -1,51 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+//import 'package:shoppingapp2/services/mainservice.dart';
 
 class CustomEmailTextField extends StatefulWidget {
   final String text;
   final Function inputfn;
+  final FocusScopeNode node;
 
-  CustomEmailTextField({this.text, this.inputfn});
+  CustomEmailTextField({
+    this.text, 
+    this.inputfn, 
+    this.node
+    });
 
   @override
   _CustomEmailTextFieldState createState() => _CustomEmailTextFieldState();
 }
 
 class _CustomEmailTextFieldState extends State<CustomEmailTextField> {
-  FocusNode focusNode;
+  //final FocusScopeNode _node = FocusScopeNode();
   // bool _isToggleVisibility = true;
 
   @override
   void initState() {
     super.initState();
-    focusNode = FocusNode();
-    focusNode.unfocus();
-    print(focusNode.hasFocus);
+    //focusNode = FocusNode();
+    //focusNode.unfocus();
+    //print(focusNode.hasFocus);
   }
 
   @override
   void dispose() {
-    focusNode.dispose();
+    //widget.node.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(focusNode.hasFocus);
+    //print(_node.hasFocus);
     return TextFormField(
-        focusNode: focusNode,
+        // focusNode: _node,
+        textInputAction: TextInputAction.next,
+        onEditingComplete: widget.node.nextFocus,
         decoration: InputDecoration(
-          // suffixIcon: widget.text == 'Password'
-          //     ? IconButton(
-          //         icon: _isToggleVisibility
-          //             ? Icon(Icons.visibility_off)
-          //             : Icon(Icons.visibility),
-          //         onPressed: () {
-          //           setState(() {
-          //             _isToggleVisibility = !_isToggleVisibility;
-          //           });
-          //         })
-          //     : null,
           labelText: '${widget.text}',
           hoverColor: Colors.blueAccent,
           focusedBorder: OutlineInputBorder(
@@ -59,13 +56,7 @@ class _CustomEmailTextFieldState extends State<CustomEmailTextField> {
               borderSide: BorderSide(
                 color: Color(mywhite1),
               )),
-          labelStyle:
-              // focusNode.hasFocus
-              //     ? TextStyle(
-              //         color: Colors.blue,
-              //       )
-              //     :
-              TextStyle(
+          labelStyle: TextStyle(
             fontSize: 12,
             color: Color(mywhite1),
           ),
@@ -93,8 +84,15 @@ class _CustomEmailTextFieldState extends State<CustomEmailTextField> {
 class CustomPasswordTextField extends StatefulWidget {
   final String text;
   final Function inputfn;
+  final Function submitfn;
+  final FocusScopeNode node;
 
-  CustomPasswordTextField({this.text, this.inputfn});
+  CustomPasswordTextField({
+    this.text, 
+    this.inputfn, 
+    this.submitfn, 
+    this.node
+    });
 
   @override
   _CustomPasswordTextFieldState createState() =>
@@ -102,28 +100,30 @@ class CustomPasswordTextField extends StatefulWidget {
 }
 
 class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
-  FocusNode focusNode;
+  // FocusNode focusNode;
   bool _isToggleVisibility = true;
+  //final _controller1 = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    focusNode = FocusNode();
-    focusNode.unfocus();
-    print(focusNode.hasFocus);
   }
 
   @override
   void dispose() {
-    focusNode.dispose();
+    // _controller1.dispose();
+    //widget.node.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(focusNode.hasFocus);
+    //print(focusNode.hasFocus);
     return TextFormField(
-        focusNode: focusNode,
+        textInputAction: TextInputAction.done,
+        // onEditingComplete:( BuildContext context, MainService mode) => widget.submitfn,
+        // onFieldSubmitted: ( BuildContext context, MainService model) => widget.submitfn,
+        //controller: _controller1,
         decoration: InputDecoration(
           suffixIcon: widget.text == 'Password'
               ? IconButton(
@@ -186,8 +186,13 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
 class CustomUsernameTextField extends StatefulWidget {
   final String text;
   final Function inputfn;
+  final FocusScopeNode node;
 
-  CustomUsernameTextField({this.text, this.inputfn});
+  CustomUsernameTextField({
+    this.text, 
+    this.inputfn, 
+    this.node
+    });
 
   @override
   _CustomUsernameTextFieldState createState() =>
@@ -195,28 +200,27 @@ class CustomUsernameTextField extends StatefulWidget {
 }
 
 class _CustomUsernameTextFieldState extends State<CustomUsernameTextField> {
-  FocusNode focusNode;
+  //FocusNode focusNode;
+
   // bool _isToggleVisibility = true;
 
   @override
   void initState() {
     super.initState();
-    focusNode = FocusNode();
-    focusNode.unfocus();
-    print(focusNode.hasFocus);
   }
 
   @override
   void dispose() {
-    focusNode.dispose();
+   // widget.node.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(focusNode.hasFocus);
     return TextFormField(
-        focusNode: focusNode,
+        //focusNode: focusNode,
+        textInputAction: TextInputAction.next,
+        onEditingComplete: widget.node.nextFocus,
         decoration: InputDecoration(
           labelText: '${widget.text}',
           hoverColor: Colors.blueAccent,
