@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 
 class CartCard extends StatefulWidget {
+
+  final String name;
+  final String price;
+  final String quantity;
+  final String image;
+  final String description;
+  final String discount;
+  CartCard({this.image,this.price,this.quantity,this.name,this.description,this.discount});
+
+
   @override
   _CartCardState createState() => _CartCardState();
 }
 
 class _CartCardState extends State<CartCard> {
+
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,7 +37,7 @@ class _CartCardState extends State<CartCard> {
                     topLeft: Radius.circular(20.0),
                     bottomLeft: Radius.circular(20.0)),
                 image: DecorationImage(
-                    image: AssetImage(saree5), fit: BoxFit.cover),
+                    image: NetworkImage(widget.image), fit: BoxFit.cover),
               ),
             ),
             SizedBox(width: 10.0),
@@ -34,7 +46,7 @@ class _CartCardState extends State<CartCard> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Product name',
+                  '${widget.name}',
                   style: TextStyle(
                     fontFamily: 'Nexa',
                   ),
@@ -49,7 +61,7 @@ class _CartCardState extends State<CartCard> {
                   height: 30,
                 ),
                 Text(
-                  'Rs 1200',
+                  '${widget.price}',
                   style: TextStyle(
                       fontFamily: 'Nexa',
                       color: Color(myyellow),

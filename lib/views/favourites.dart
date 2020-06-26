@@ -1,9 +1,13 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/favourites_model.dart';
+//import 'package:shoppingapp2/models/product_model.dart';
 import 'package:shoppingapp2/views/cart.dart';
-import 'package:shoppingapp2/widgets/favourite_list_widget.dart';
+import 'package:shoppingapp2/widgets/prod_list_widget.dart';
+
 
 class FavouritesView extends StatefulWidget {
   static String id = 'favourites';
@@ -15,6 +19,7 @@ class _FavouritesViewState extends State<FavouritesView>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> tween;
+  //String _collection = EnumToString();
 
   @override
   void initState() {
@@ -36,6 +41,7 @@ class _FavouritesViewState extends State<FavouritesView>
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -91,17 +97,12 @@ class _FavouritesViewState extends State<FavouritesView>
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20.0),
                           topRight: Radius.circular(20.0))),
-                  child: MyFavouriteListView(
+                  child: MyProdListView(
                     uid: Provider.of<AppUser>(context).uid,
+                    viewType: ViewTypes.listView,
+                    model: Favourites,
+                    collection: EnumToString.parse(CollectionTypes.user_favourites),
                   ),
-
-                  // GridView(
-
-                  //     //   children: <Widget>[
-
-                  //     // ],
-
-                  //     ),
                 ),
               ),
             ],

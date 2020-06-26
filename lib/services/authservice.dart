@@ -53,6 +53,14 @@ class AuthService extends Model {
     //return _auth.currentUser().then((user) => _userFromFirebase(user)).asStream();
   }
 
+  // Stream getStream() {
+  //   final snapshot = Firestore.instance
+  //       .collection('user_favourites')
+  //       .where('id', isEqualTo: '${user.uid}')
+  //       .getDocuments();
+    
+  // }
+
   Future<void> getAuthError(String msg) async {
     errorMsg = await msg;
   }

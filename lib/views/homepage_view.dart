@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 //import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/favourites_model.dart';
 //import 'package:shoppingapp2/services/authservice.dart';
 import 'package:shoppingapp2/services/mainservice.dart';
 import 'package:shoppingapp2/views/cart.dart';
@@ -19,6 +24,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey _scaffoldKey = new GlobalKey();
+  num _count = 0;
+
+  
+  getUserCartCount(
+    QuerySnapshot snapshot,
+    AppUser user,
+  ) async {
+    var docs = await snapshot.documents;
+    List list =
+        docs.map((document) => Favourites.fromSnapshot(document)).toList();
+    return list.length;
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    AppUser user = Provider.of<AppUser>(context);
+    final snapshot = await Firestore.instance
+        .collection('user_cart')
+        .where('id', isEqualTo: '${user.uid}')
+        .getDocuments();
+    num count = await getUserCartCount(snapshot, user);
+    setState(() {
+      _count = count;
+    });
+    print('cart count: $_count');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +69,39 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   IconButton(icon: Icon(Icons.search), onPressed: () {}),
                   SizedBox(width: 40.0),
-                  IconButton(
-                      icon: Icon(Icons.shopping_cart),
-                      onPressed: () {
-                        Navigator.pushNamed(context, ShoppingCart.id);
-                      }),
+                  Stack(
+                    children: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.shopping_cart),
+                          onPressed: () {
+                            Navigator.pushNamed(context, ShoppingCart.id);
+                          }),
+                      Positioned(
+                        right: 7,
+                        top: 5,
+                        child: Container(
+                          padding: EdgeInsets.all(2),
+                          decoration: new BoxDecoration(
+                            color: Color(myyellow),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '$_count',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                                fontFamily: 'Nexa',
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(width: 40.0),
                   IconButton(
                       icon: Icon(Icons.clear),
@@ -112,7 +172,9 @@ class _HomePageState extends State<HomePage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   ProductDisplayPage(
-                                                    categoryname: 'Saree',
+                                                    categoryname:
+                                                        EnumToString.parse(
+                                                            Categories.Saree),
                                                     headerimage: saree5,
                                                   )));
                                     },
@@ -126,7 +188,9 @@ class _HomePageState extends State<HomePage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   ProductDisplayPage(
-                                                    categoryname: 'Tops',
+                                                    categoryname:
+                                                        EnumToString.parse(
+                                                            Categories.Top),
                                                     headerimage: tops,
                                                   )));
                                     },
@@ -138,7 +202,9 @@ class _HomePageState extends State<HomePage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   ProductDisplayPage(
-                                                    categoryname: 'Blouse',
+                                                    categoryname:
+                                                        EnumToString.parse(
+                                                            Categories.Blouse),
                                                     headerimage: blouse,
                                                   )));
                                     },
@@ -152,7 +218,9 @@ class _HomePageState extends State<HomePage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   ProductDisplayPage(
-                                                    categoryname: 'Trouser',
+                                                    categoryname:
+                                                        EnumToString.parse(
+                                                            Categories.Trouser),
                                                     headerimage: trousers,
                                                   )));
                                     },

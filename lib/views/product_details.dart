@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/favourites_model.dart';
 import 'package:shoppingapp2/services/mainservice.dart';
+import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/views/product_pic_closeup.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
 
@@ -17,6 +20,8 @@ class ProductDetailsPage extends StatefulWidget {
   final String discount;
   final MainService model;
   final AppUser user;
+  final Map<String, Favourites> map;
+  final String docID;
 
   ProductDetailsPage(
       {this.image,
@@ -26,6 +31,8 @@ class ProductDetailsPage extends StatefulWidget {
       this.description,
       this.model,
       this.user,
+      this.map,
+      this.docID,
       this.discount});
 
   @override
@@ -33,17 +40,23 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> tween;
   int _quantity = 0;
+  bool _isFav;
+  String docId = '';
+  num _count = 0;
 
   @override
   void initState() {
     super.initState();
+    _isFav = widget.isFav;
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    tween = Tween<double>(begin: 300, end: 0).animate(_controller)
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    CurvedAnimation _curve =
+        CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    tween = Tween<double>(begin: 300, end: 0).animate(_curve)
       ..addListener(() {
         setState(() {});
       });
@@ -56,9 +69,35 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
     super.dispose();
   }
 
+  getUserCartCount(
+    QuerySnapshot snapshot,
+    AppUser user,
+  ) async {
+    var docs = await snapshot.documents;
+    List list =
+        docs.map((document) => Favourites.fromSnapshot(document)).toList();
+    return list.length;
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    AppUser user = Provider.of<AppUser>(context);
+    final snapshot = await Firestore.instance
+        .collection('user_cart')
+        .where('id', isEqualTo: '${user.uid}')
+        .getDocuments();
+    num count = await getUserCartCount(snapshot, user);
+    setState(() {
+      _count = count;
+    });
+    print('cart count: $_count');
+  }
+
   @override
   Widget build(BuildContext context) {
-    AppUser user =Provider.of<AppUser>(context);
+    // _isFav = widget.isFav;
+    AppUser user = Provider.of<AppUser>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -70,7 +109,44 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
             children: <Widget>[
               IconButton(icon: Icon(Icons.search), onPressed: () {}),
               SizedBox(width: 40.0),
-              IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
+
+              Stack(
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.shopping_cart),
+                      onPressed: () {
+                        Navigator.pushNamed(context, ShoppingCart.id);
+                      }),
+                  Positioned(
+                    right: 7,
+                    top: 5,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: new BoxDecoration(
+                        color: Color(myyellow),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '$_count',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontFamily: 'Nexa',
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+
+              // IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {
+              //    Navigator.pushNamed(context, ShoppingCart.id);
+              // }),
             ],
           ),
 
@@ -105,7 +181,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                 elevation: 8.0,
                                 borderRadius: BorderRadius.circular(30.0),
                                 child: IconButton(
-                                    icon: widget.isFav
+                                    icon: _isFav
                                         ? Icon(
                                             Icons.favorite,
                                             color: Color(myyellow),
@@ -114,7 +190,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                             Icons.favorite_border,
                                             color: Color(myyellow),
                                           ),
-                                    onPressed: () {}),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isFav = !_isFav;
+                                        widget.map.forEach((key, value) {
+                                          if (value.image == widget.image) {
+                                            docId = key;
+                                          }
+                                        });
+
+                                        widget.model.firestoreAction(
+                                            _isFav,
+                                            docId,
+                                            widget.user.uid,
+                                            widget.name,
+                                            widget.description,
+                                            widget.price,
+                                            widget.discount,
+                                            widget.image);
+                                      });
+                                    }),
                               ),
                             )
                           ],
@@ -357,7 +452,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                   widget.description,
                                                   widget.price,
                                                   widget.discount,
-                                                  _quantity == 0 ? '1' : '$_quantity',
+                                                  _quantity == 0
+                                                      ? '1'
+                                                      : '$_quantity',
                                                   //docId,
                                                   widget.image);
                                             },

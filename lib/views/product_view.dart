@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
+import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/favourites_model.dart';
+import 'package:shoppingapp2/models/product_model.dart';
 import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
-import 'package:shoppingapp2/widgets/product_card.dart';
+import 'package:shoppingapp2/widgets/prod_list_widget.dart';
+//import 'package:shoppingapp2/widgets/product_card.dart';
 
 class ProductDisplayPage extends StatefulWidget {
   static String id = 'productpage';
@@ -16,17 +23,20 @@ class ProductDisplayPage extends StatefulWidget {
 }
 
 class _ProductDisplayPageState extends State<ProductDisplayPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   //double _height = 200.0;
   AnimationController _controller;
   Animation<double> tween;
+  num _count = 0;
 
   @override
   void initState() {
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    tween = Tween<double>(begin: 400, end: 60).animate(_controller)
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    CurvedAnimation _curve =
+        CurvedAnimation(parent: _controller, curve: Curves.decelerate);
+    tween = Tween<double>(begin: 500, end: 60).animate(_curve)
       ..addListener(() {
         setState(() {});
       });
@@ -37,10 +47,38 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
   void dispose() {
     _controller.dispose();
     super.dispose();
+    print('dispose from cat');
+  }
+
+  getUserCartCount(
+    QuerySnapshot snapshot,
+    AppUser user,
+  ) async {
+    var docs = await snapshot.documents;
+    List list =
+        docs.map((document) => Favourites.fromSnapshot(document)).toList();
+    return list.length;
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    AppUser user = Provider.of<AppUser>(context);
+    final snapshot = await Firestore.instance
+        .collection('user_cart')
+        .where('id', isEqualTo: '${user.uid}')
+        .getDocuments();
+    num count = await getUserCartCount(snapshot, user);
+    setState(() {
+      _count = count;
+    });
+    print('cart count: $_count');
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.categoryname == 'Saree') {}
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
@@ -53,9 +91,46 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
             children: <Widget>[
               IconButton(icon: Icon(Icons.search), onPressed: () {}),
               SizedBox(width: 40.0),
-              IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {
-                Navigator.pushNamed(context, ShoppingCart.id);
-              }),
+
+              Stack(
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.shopping_cart),
+                      onPressed: () {
+                        Navigator.pushNamed(context, ShoppingCart.id);
+                      }),
+                  Positioned(
+                    right: 7,
+                    top: 5,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: new BoxDecoration(
+                        color: Color(myyellow),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '$_count',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontFamily: 'Nexa',
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+
+              // IconButton(
+              //     icon: Icon(Icons.shopping_cart),
+              //     onPressed: () {
+              //       Navigator.pushNamed(context, ShoppingCart.id);
+              //     }),
             ],
           ),
         ),
@@ -97,31 +172,13 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20.0),
                           topRight: Radius.circular(20.0))),
-                  child: ListView(
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ProductCard(
-                        image: saree5,
-                        price: '1200',
-                        name: 'Sample Prod',
-                      ),
-                      ProductCard(
-                        image: saree5,
-                        price: '1200',
-                        name: 'Sample Prod',
-                      ),
-                    ],
-
-                    //                 child: ListView(
-                    //   children: <Widget>[
-
-                    //   ],
-                    // ),
+                  child: MyProdListView(
+                    uid: Provider.of<AppUser>(context).uid,
+                    viewType: ViewTypes.listView,
+                    model: Product,
+                    collection: EnumToString.parse(CollectionTypes.sarees),
+                    category: widget.categoryname,
                   ),
-                  //duration: Duration(seconds: 5),
                 ),
               ),
             ],

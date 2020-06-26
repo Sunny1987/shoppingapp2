@@ -1,12 +1,19 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
-import 'package:shoppingapp2/widgets/cart_card.dart';
+import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/cart_model.dart';
+//import 'package:shoppingapp2/widgets/cart_card.dart';
+import 'package:shoppingapp2/widgets/prod_list_widget.dart';
 
 class ShoppingCart extends StatefulWidget {
   static String id = 'cart';
   @override
   _ShoppingCartState createState() => _ShoppingCartState();
 }
+
+
 
 class _ShoppingCartState extends State<ShoppingCart> {
   @override
@@ -33,25 +40,11 @@ class _ShoppingCartState extends State<ShoppingCart> {
                 ))),
             Expanded(
               flex: 6,
-              child:
-
-                  // ListView.builder(
-                  //   itemCount: 2,
-                  //   itemBuilder: (context,index){
-                  //     return Dismissible(
-                  //       key: Key(index),
-                  //       child: CartCard()
-
-                  //       );
-                  //   }
-
-                  //   )
-
-                  ListView(
-                children: <Widget>[
-                  CartCard(),
-                  CartCard(),
-                ],
+              child: MyProdListView(
+                uid: Provider.of<AppUser>(context).uid,
+                viewType: ViewTypes.listView,
+                collection: EnumToString.parse(CollectionTypes.user_cart),
+                model: Cart,
               ),
             ),
           ],
@@ -69,7 +62,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   children: <Widget>[
                     Text(
                       'SubTotal:',
-                      style: TextStyle(fontFamily: 'Nexa', color: Colors.black45,fontSize: 18),
+                      style: TextStyle(
+                          fontFamily: 'Nexa',
+                          color: Colors.black45,
+                          fontSize: 18),
                     ),
                     SizedBox(
                       width: 5.0,
@@ -77,7 +73,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                     Text(
                       ' Rs 2300',
                       style: TextStyle(
-                          fontFamily: 'Nexa', fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black45),
+                          fontFamily: 'Nexa',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.black45),
                     ),
                   ],
                 ),

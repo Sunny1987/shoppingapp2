@@ -1,5 +1,3 @@
-
-
 //images
 const String welcomepic = 'assets/images/saree2.jpg';
 const String dashboard = 'assets/images/dashboard.jpg';
@@ -23,3 +21,19 @@ const int myyellow = 0xFFEFA51B;
 const String No_Such_User = 'No such User';
 const String Invalid_Email_Format = 'Please provide valid email address';
 const String Invalid_Email_Or_Password = 'Invalid email id or password';
+
+const String user_favourites = 'user_favourites';
+const String sarees = 'sarees';
+const String user_cart = 'user_cart';
+const String users = 'users';
+
+
+//enum
+enum ViewTypes {
+  listView,
+  gridView,
+}
+
+enum CollectionTypes { user_favourites, sarees, user_cart, users }
+
+enum Categories { Saree, Top, Blouse, Trouser }

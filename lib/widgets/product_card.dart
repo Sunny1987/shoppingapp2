@@ -15,9 +15,18 @@ class ProductCard extends StatefulWidget {
   final String price;
   final String description;
   final String discount;
+  final String category;
 
-
-  ProductCard({this.image, this.name, this.price,this.description,this.discount});
+  ProductCard({
+    this.image,
+    this.name,
+    this.price,
+    this.description,
+    this.discount,
+    this.category,
+    //this.map,
+    //this.docID
+  });
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -35,7 +44,7 @@ class _ProductCardState extends State<ProductCard> {
   ) async {
     //var snapshot = await model.getFavourites(user);
 
-    var docs = snapshot.documents;
+    var docs = await snapshot.documents;
     List list =
         docs.map((document) => Favourites.fromSnapshot(document)).toList();
 
@@ -45,57 +54,58 @@ class _ProductCardState extends State<ProductCard> {
 
     list.forEach((document) {
       Favourites fav = document;
-      if (widget.image == fav.image) {
-        if (this.mounted) {
+      if (mounted) {
+        if (widget.image == fav.image) {
           setState(() {
             _isFav = true;
-            //_index = index;
+          
           });
+          // } else {
+          //   setState(() {
+          //     _isFav = false;
+          //   });
         }
-      } else {
-        print('Not Fav image');
       }
     });
   }
 
-  getAllDocIds(QuerySnapshot snapshot) {
-    var docs = snapshot.documents;
+  getAllDocIds(QuerySnapshot snapshot) async {
+    var docs = await snapshot.documents;
 
     product_map = Map.fromIterable(docs,
         key: (doc) => doc.documentID,
         value: (doc) => Product.fromSnapshot(doc));
   }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  // @override
+  // void didChangeDependencies() async {
+  //   super.didChangeDependencies();
+  //    callFav(context);
+  // }
+
+  callFav(BuildContext context) async {
     AppUser user = Provider.of<AppUser>(context);
-    print('user from init: ${user.username}');
     final snapshot = await Firestore.instance
         .collection('user_favourites')
         .where('id', isEqualTo: '${user.uid}')
         .getDocuments();
-
-    getFav(snapshot, user);
-    print('map from didChangeDependencies: $map');
-    map.forEach((key, value) {
-      if (value.image == widget.image) {
-        setState(() {
-          docId = key;
-        });
-      }
-    });
-
+    await getFav(snapshot, user);
     final prod_snapshots =
         await Firestore.instance.collection('sarees').getDocuments();
 
-    getAllDocIds(prod_snapshots);
-    print('prod_map: $product_map');
+    await getAllDocIds(prod_snapshots);
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     AppUser user = Provider.of<AppUser>(context);
+    callFav(context);
+
     return ScopedModelDescendant<MainService>(
       builder: (BuildContext context, Widget child, MainService model) {
         return InkWell(
@@ -110,6 +120,7 @@ class _ProductCardState extends State<ProductCard> {
                       model: model,
                       user: user,
                       discount: widget.discount,
+                      map: map,
                     )));
           },
           child: Container(
