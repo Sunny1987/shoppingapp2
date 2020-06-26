@@ -16,6 +16,11 @@ class ShoppingCart extends StatefulWidget {
 
 
 class _ShoppingCartState extends State<ShoppingCart> {
+
+  num _subTotal;
+
+  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

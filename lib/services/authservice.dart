@@ -94,7 +94,7 @@ class AuthService extends Model {
     }
   }
 
-    void uploadUserCart(String uid, String name, String description, String price,
+    Future<bool> uploadUserCart(String uid, String name, String description, String price,
       String discount, String quantity, String image) async {
     try {
       await Firestore.instance.collection('user_cart').document().setData({
@@ -107,9 +107,12 @@ class AuthService extends Model {
         //'docId': docId,
         'image': image,
         'createdAt': FieldValue.serverTimestamp()
+        
       });
+      return Future.value(true);
     } catch (e) {
       print(e.toString());
+      return Future.value(false);
     }
   }
 

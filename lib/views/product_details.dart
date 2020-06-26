@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
@@ -47,6 +48,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
   bool _isFav;
   String docId = '';
   num _count = 0;
+  bool _status = false;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -445,18 +448,30 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                             height: 20.0,
                                           ),
                                           InkWell(
-                                            onTap: () {
-                                              widget.model.uploadUserCart(
-                                                  user.uid,
-                                                  widget.name,
-                                                  widget.description,
-                                                  widget.price,
-                                                  widget.discount,
-                                                  _quantity == 0
-                                                      ? '1'
-                                                      : '$_quantity',
-                                                  //docId,
-                                                  widget.image);
+                                            onTap: () async {
+                                              setState(() {
+                                                _isUploading = true;
+                                              });
+
+                                              bool _stat = await widget.model
+                                                  .uploadUserCart(
+                                                      user.uid,
+                                                      widget.name,
+                                                      widget.description,
+                                                      widget.price,
+                                                      widget.discount,
+                                                      _quantity == 0
+                                                          ? '1'
+                                                          : '$_quantity',
+                                                      //docId,
+                                                      widget.image);
+                                              setState(() {
+                                                _isUploading = false;
+                                              });
+
+                                              setState(() {
+                                                _status = _stat;
+                                              });
                                             },
                                             child: Container(
                                               width: MediaQuery.of(context)
@@ -480,14 +495,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                     SizedBox(
                                                       width: 10,
                                                     ),
-                                                    Text(
-                                                      'Add to Cart',
-                                                      style: TextStyle(
-                                                          fontFamily: 'Nexa',
-                                                          color: Colors.white60,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    )
+                                                    //_status?
+                                                    _isUploading
+                                                        ? SpinKitRing(
+                                                            lineWidth: 2,
+                                                            size: 18,
+                                                            color: Colors.white,
+                                                            //controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 60)),
+                                                          )
+                                                        : Text(
+                                                            'Add to Cart',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Nexa',
+                                                                color: Colors
+                                                                    .white60,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          )
                                                   ],
                                                 ),
                                               ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -99,7 +100,7 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProductDisplayPage(
-                              categoryname: 'Saree',
+                              categoryname: EnumToString.parse(Categories.Saree),
                               headerimage: saree5,
                             )));
                   },
@@ -115,7 +116,7 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProductDisplayPage(
-                              categoryname: 'Tops',
+                              categoryname: EnumToString.parse(Categories.Top),
                               headerimage: tops,
                             )));
                   },
@@ -131,7 +132,7 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProductDisplayPage(
-                              categoryname: 'Blouse',
+                              categoryname: EnumToString.parse(Categories.Blouse),
                               headerimage: blouse,
                             )));
                   },
@@ -147,7 +148,7 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProductDisplayPage(
-                              categoryname: 'Trouser',
+                              categoryname: EnumToString.parse(Categories.Trouser),
                               headerimage: trousers,
                             )));
                   },
@@ -169,8 +170,8 @@ class _UserDrawerWidgetsState extends State<UserDrawerWidgets> {
         ),
         InkWell(
           onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => FavouritesView()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => FavouritesView()));
           },
           child: ListTile(
             leading: Icon(Icons.favorite, color: Colors.blueAccent),
