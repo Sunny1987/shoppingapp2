@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
 import 'package:shoppingapp2/models/favourites_model.dart';
+import 'package:shoppingapp2/services/authservice.dart';
 import 'package:shoppingapp2/services/mainservice.dart';
+import 'package:shoppingapp2/services/searchservice.dart';
 import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/views/product_pic_closeup.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
@@ -23,6 +27,7 @@ class ProductDetailsPage extends StatefulWidget {
   final AppUser user;
   final Map<String, Favourites> map;
   final String docID;
+  final String category;
 
   ProductDetailsPage(
       {this.image,
@@ -34,6 +39,7 @@ class ProductDetailsPage extends StatefulWidget {
       this.user,
       this.map,
       this.docID,
+      this.category,
       this.discount});
 
   @override
@@ -100,6 +106,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
   @override
   Widget build(BuildContext context) {
     // _isFav = widget.isFav;
+    //EnumToString.parse(Categories.Top)
     AppUser user = Provider.of<AppUser>(context);
     return SafeArea(
       child: Scaffold(
@@ -110,7 +117,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
           flexibleSpace: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    final names = await AuthService().getProds();
+                    showSearch(
+                        context: context, delegate: ProductSearch(names));
+                  }),
               SizedBox(width: 40.0),
 
               Stack(
@@ -295,99 +308,228 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                   style: TextStyle(
                                                       fontFamily: 'Nexa',
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.bold))
                                             ],
                                           ),
                                           SizedBox(
                                             height: 5.0,
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: <Widget>[
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Material(
-                                                    elevation: 5.0,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      child: Text(
-                                                        'S',
-                                                        style: TextStyle(
-                                                            fontFamily: 'Nexa'),
-                                                      ),
-                                                    )),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Material(
-                                                    elevation: 5.0,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      child: Text(
-                                                        'M',
-                                                        style: TextStyle(
-                                                            fontFamily: 'Nexa'),
-                                                      ),
-                                                    )),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Material(
-                                                    elevation: 5.0,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      child: Text(
-                                                        'L',
-                                                        style: TextStyle(
-                                                            fontFamily: 'Nexa'),
-                                                      ),
-                                                    )),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Material(
-                                                    elevation: 5.0,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      child: Text(
-                                                        'XL',
-                                                        style: TextStyle(
-                                                            fontFamily: 'Nexa'),
-                                                      ),
-                                                    )),
-                                              ),
-                                            ],
-                                          ),
+                                          (widget.category ==
+                                                      '${EnumToString.parse(Categories.Top)}') ||
+                                                  (widget.category ==
+                                                      '${EnumToString.parse(Categories.Trouser)}')
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: <Widget>[
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: Material(
+                                                          elevation: 5.0,
+                                                          color: Colors
+                                                              .redAccent
+                                                              .shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'S',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: Material(
+                                                          elevation: 5.0,
+                                                          color: Colors
+                                                              .blueAccent
+                                                              .shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'M',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: Material(
+                                                          elevation: 5.0,
+                                                          color: Colors
+                                                              .greenAccent
+                                                              .shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'L',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: Material(
+                                                          elevation: 5.0,
+                                                          color: Colors
+                                                              .orangeAccent
+                                                              .shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'XL',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: <Widget>[
+                                                    InkWell(
+                                                      onTap: null,
+                                                      child: Material(
+                                                          elevation: 0.0,
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'S',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: null,
+                                                      child: Material(
+                                                          elevation: 0.0,
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'M',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: null,
+                                                      child: Material(
+                                                          elevation: 0.0,
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'L',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: null,
+                                                      child: Material(
+                                                          elevation: 0.0,
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(15.0),
+                                                            child: Text(
+                                                              'XL',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Nexa'),
+                                                            ),
+                                                          )),
+                                                    ),
+                                                  ],
+                                                ),
                                           SizedBox(
                                             height: 20.0,
                                           ),
@@ -439,7 +581,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                                                       icon: Icon(Icons.remove),
                                                       onPressed: () {
                                                         setState(() {
-                                                          _quantity--;
+                                                          if (_quantity > 0) {
+                                                            _quantity--;
+                                                          }
                                                         });
                                                       }))
                                             ],

@@ -1,10 +1,16 @@
 //import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
+import 'package:shoppingapp2/models/favourites_model.dart';
+import 'package:shoppingapp2/models/product_model.dart';
 
 //const String NoSuchUser = 'No such User';
 
@@ -18,6 +24,10 @@ class AuthService extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
   AppUser appuser;
   var errorMsg;
+  bool _isFav = false;
+  Map<String, Favourites> map;
+  String docId = '';
+  Map<String, Product> product_map;
 
   AppUser _userFromFirebase(FirebaseUser user) {
     if (user != null) {
@@ -58,7 +68,7 @@ class AuthService extends Model {
   //       .collection('user_favourites')
   //       .where('id', isEqualTo: '${user.uid}')
   //       .getDocuments();
-    
+
   // }
 
   Future<void> getAuthError(String msg) async {
@@ -94,8 +104,8 @@ class AuthService extends Model {
     }
   }
 
-    Future<bool> uploadUserCart(String uid, String name, String description, String price,
-      String discount, String quantity, String image) async {
+  Future<bool> uploadUserCart(String uid, String name, String description,
+      String price, String discount, String quantity, String image) async {
     try {
       await Firestore.instance.collection('user_cart').document().setData({
         'id': uid,
@@ -107,7 +117,6 @@ class AuthService extends Model {
         //'docId': docId,
         'image': image,
         'createdAt': FieldValue.serverTimestamp()
-        
       });
       return Future.value(true);
     } catch (e) {
@@ -166,7 +175,94 @@ class AuthService extends Model {
         .delete();
   }
 
+  Future<List<dynamic>> getProds() async {
+    List names = [];
+    final snapshot = await Firestore.instance
+        .collection(EnumToString.parse(CollectionTypes.sarees))
+        .getDocuments();
+    names = await getProdList(snapshot);
 
+    return names;
+  }
 
+  Future<List<dynamic>> getProdList(QuerySnapshot snapshot) async {
+    var docs = await snapshot.documents;
+    List name = [];
 
+    List list =
+        docs.map((document) => Favourites.fromSnapshot(document)).toList();
+
+    list.forEach((document) {
+      Favourites fav = document;
+      name.add(fav.name);
+      //list_description.add(fav.description);
+    });
+
+    return name;
+  }
+
+  Future getSearchResults(String query) async {
+    var result = await Firestore.instance
+        .collection(EnumToString.parse(CollectionTypes.sarees))
+        .where('name', isEqualTo: '$query')
+        .getDocuments();
+    var docs = result.documents;
+    List<Product> list =
+        docs.map((document) => Product.fromSnapshot(document)).toList();
+    //final fav = Favourites.fromSnapshot(doc);
+    return list;
+  }
+
+  getFavData(QuerySnapshot snapshot, AppUser user, String image) async {
+    //var snapshot = await model.getFavourites(user);
+
+    var docs = await snapshot.documents;
+    List list =
+        docs.map((document) => Favourites.fromSnapshot(document)).toList();
+
+    map = Map.fromIterable(docs,
+        key: (doc) => doc.documentID,
+        value: (doc) => Favourites.fromSnapshot(doc));
+
+    list.forEach((document) {
+      Favourites fav = document;
+      //if (mounted) {
+      if (image == fav.image) {
+        _isFav = true;
+
+        // } else {
+        //   setState(() {
+        //     _isFav = false;
+        //   });
+      }
+      // }
+    });
+
+    //return _isFav;
+  }
+
+  getAllDocIds(QuerySnapshot snapshot) async {
+    var docs = await snapshot.documents;
+
+    product_map = Map.fromIterable(docs,
+        key: (doc) => doc.documentID,
+        value: (doc) => Product.fromSnapshot(doc));
+  }
+
+  Future<Map<bool,Map<String, Favourites>>> callFav(BuildContext context, String image) async {
+    AppUser user = Provider.of<AppUser>(context,listen: false);
+    final snapshot = await Firestore.instance
+        .collection(EnumToString.parse(CollectionTypes.user_favourites))
+        //.collection('user_favourites')
+        .where('id', isEqualTo: '${user.uid}')
+        .getDocuments();
+    await getFavData(snapshot, user, image);
+    final prod_snapshots =
+        await Firestore.instance.collection('sarees').getDocuments();
+
+    await getAllDocIds(prod_snapshots);
+    Map<bool,Map<String, Favourites>> mymap = {_isFav: map};
+    
+    return mymap;
+  }
 }

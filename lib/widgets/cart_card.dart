@@ -129,7 +129,9 @@ class _CartCardState extends State<CartCard> {
                         child: InkWell(
                           onTap: () {
                             setState(() {
-                              _quantity--;
+                              if (_quantity > 0) {
+                                _quantity--;
+                              }
                             });
                           },
                           child: Icon(

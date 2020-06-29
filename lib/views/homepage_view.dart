@@ -7,8 +7,10 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
 import 'package:shoppingapp2/models/favourites_model.dart';
+import 'package:shoppingapp2/services/authservice.dart';
 //import 'package:shoppingapp2/services/authservice.dart';
 import 'package:shoppingapp2/services/mainservice.dart';
+import 'package:shoppingapp2/services/searchservice.dart';
 import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/views/product_view.dart';
 import 'package:shoppingapp2/widgets/category_card.dart';
@@ -26,7 +28,6 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey _scaffoldKey = new GlobalKey();
   num _count = 0;
 
-  
   getUserCartCount(
     QuerySnapshot snapshot,
     AppUser user,
@@ -67,7 +68,13 @@ class _HomePageState extends State<HomePage> {
               flexibleSpace: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  IconButton(icon: Icon(Icons.search), onPressed: () {}),
+                  IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () async {
+                        final names = await AuthService().getProds();
+                        showSearch(
+                            context: context, delegate: ProductSearch(names));
+                      }),
                   SizedBox(width: 40.0),
                   Stack(
                     children: <Widget>[

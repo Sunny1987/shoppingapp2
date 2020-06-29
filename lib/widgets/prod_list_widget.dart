@@ -89,7 +89,7 @@ class _MyProdListViewState extends State<MyProdListView> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: _buildSnapshot(context, snapshot.data.documents,
-                  widget.viewType, widget.model));
+                  widget.viewType, widget.model,widget.category));
         }
       },
     );
@@ -97,28 +97,28 @@ class _MyProdListViewState extends State<MyProdListView> {
 }
 
 Widget _buildSnapshot(BuildContext context, List<DocumentSnapshot> snapshot,
-    ViewTypes viewType, dynamic model) {
+    ViewTypes viewType, dynamic model,String category) {
   Widget widget;
 
   //for listview
   if (viewType == ViewTypes.listView) {
     widget = ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _callProductCard(data, model)).toList(),
+      children: snapshot.map((data) => _callProductCard(data, model,category)).toList(),
     );
 
     //for gridview
   } else if (viewType == ViewTypes.gridView) {
     widget = GridView.count(
       crossAxisCount: 2,
-      children: snapshot.map((data) => _callProductCard(data, model)).toList(),
+      children: snapshot.map((data) => _callProductCard(data, model,category)).toList(),
     );
   }
 
   return widget;
 }
 
-Widget _callProductCard(DocumentSnapshot data, dynamic model) {
+Widget _callProductCard(DocumentSnapshot data, dynamic model, String category) {
   Widget widget;
 
   if (model == Favourites) {

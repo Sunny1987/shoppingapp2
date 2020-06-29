@@ -6,6 +6,8 @@ import 'package:shoppingapp2/app_consts/app_var.dart';
 import 'package:shoppingapp2/models/appuser.dart';
 import 'package:shoppingapp2/models/favourites_model.dart';
 import 'package:shoppingapp2/models/product_model.dart';
+import 'package:shoppingapp2/services/authservice.dart';
+import 'package:shoppingapp2/services/searchservice.dart';
 import 'package:shoppingapp2/views/cart.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
 import 'package:shoppingapp2/widgets/prod_list_widget.dart';
@@ -65,7 +67,8 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
     super.didChangeDependencies();
     AppUser user = Provider.of<AppUser>(context);
     final snapshot = await Firestore.instance
-        .collection('user_cart')
+        .collection(EnumToString.parse(CollectionTypes.user_cart))
+        //.collection('user_cart')
         .where('id', isEqualTo: '${user.uid}')
         .getDocuments();
     num count = await getUserCartCount(snapshot, user);
@@ -89,7 +92,13 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
           flexibleSpace: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    final names = await AuthService().getProds();
+                    showSearch(
+                        context: context, delegate: ProductSearch(names));
+                  }),
               SizedBox(width: 40.0),
 
               Stack(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -77,16 +78,12 @@ class _ProductCardState extends State<ProductCard> {
         value: (doc) => Product.fromSnapshot(doc));
   }
 
-  // @override
-  // void didChangeDependencies() async {
-  //   super.didChangeDependencies();
-  //    callFav(context);
-  // }
 
   callFav(BuildContext context) async {
     AppUser user = Provider.of<AppUser>(context);
     final snapshot = await Firestore.instance
-        .collection('user_favourites')
+        .collection(EnumToString.parse(CollectionTypes.user_favourites))
+        //.collection('user_favourites')
         .where('id', isEqualTo: '${user.uid}')
         .getDocuments();
     await getFav(snapshot, user);
@@ -121,6 +118,7 @@ class _ProductCardState extends State<ProductCard> {
                       user: user,
                       discount: widget.discount,
                       map: map,
+                      category:widget.category,
                     )));
           },
           child: Container(
