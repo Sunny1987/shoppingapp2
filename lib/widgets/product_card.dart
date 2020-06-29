@@ -88,7 +88,7 @@ class _ProductCardState extends State<ProductCard> {
         .getDocuments();
     await getFav(snapshot, user);
     final prod_snapshots =
-        await Firestore.instance.collection('sarees').getDocuments();
+        await Firestore.instance.collection(EnumToString.parse(CollectionTypes.sarees)).getDocuments();
 
     await getAllDocIds(prod_snapshots);
   }

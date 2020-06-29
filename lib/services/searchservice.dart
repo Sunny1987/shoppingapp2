@@ -70,8 +70,6 @@ class ProductSearch extends SearchDelegate<Product> {
                 _isFav = key;
                 map = value;
               });
-              // print(_isFav);
-              // print(map);
 
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ProductDetailsPage(
@@ -97,22 +95,22 @@ class ProductSearch extends SearchDelegate<Product> {
                         blurRadius: 3.0,
                         color: Colors.grey)
                   ],
-                  borderRadius: BorderRadius.circular(20.0)),
+                  borderRadius: BorderRadius.circular(10.0)),
               width: double.infinity,
-              height: 100,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    height: 100,
-                    width: 130,
+                    height: 70,
+                    width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          bottomLeft: Radius.circular(20.0)),
+                          topLeft: Radius.circular(10.0),
+                          bottomLeft: Radius.circular(10.0)),
                       image: DecorationImage(
                           image: NetworkImage(searchList[index].image),
-                          fit: BoxFit.cover),
+                          fit: BoxFit.fill),
                     ),
                   ),
                   SizedBox(
@@ -122,7 +120,7 @@ class ProductSearch extends SearchDelegate<Product> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
                           searchList[index].name,
                           style: TextStyle(

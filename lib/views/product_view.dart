@@ -9,6 +9,7 @@ import 'package:shoppingapp2/models/product_model.dart';
 import 'package:shoppingapp2/services/authservice.dart';
 import 'package:shoppingapp2/services/searchservice.dart';
 import 'package:shoppingapp2/views/cart.dart';
+import 'package:shoppingapp2/views/homepage_view.dart';
 import 'package:shoppingapp2/widgets/mydrawer.dart';
 import 'package:shoppingapp2/widgets/prod_list_widget.dart';
 //import 'package:shoppingapp2/widgets/product_card.dart';
@@ -92,6 +93,12 @@ class _ProductDisplayPageState extends State<ProductDisplayPage>
           flexibleSpace: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () {
+                    Navigator.pushNamed(context, HomePage.id);
+                  }),
+              SizedBox(width: 40.0),
               IconButton(
                   icon: Icon(Icons.search),
                   onPressed: () async {
